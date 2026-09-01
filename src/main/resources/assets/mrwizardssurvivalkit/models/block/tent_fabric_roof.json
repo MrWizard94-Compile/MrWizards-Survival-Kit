@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mrwizardssurvivalkit:block/tent_canvas",
+    "canvas": "mrwizardssurvivalkit:block/tent_canvas"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 8, 16],
+      "faces": {
+        "north": { "uv": [0, 8, 16, 16], "texture": "#canvas" },
+        "south": { "uv": [0, 8, 16, 16], "texture": "#canvas" },
+        "west": { "uv": [0, 8, 16, 16], "texture": "#canvas" },
+        "east": { "uv": [0, 8, 16, 16], "texture": "#canvas" },
+        "up": { "uv": [0, 0, 16, 16], "texture": "#canvas" },
+        "down": { "uv": [0, 0, 16, 16], "texture": "#canvas" }
+      }
+    },
+    {
+      "from": [2, 8, 2],
+      "to": [14, 14, 14],
+      "faces": {
+        "north": { "uv": [2, 2, 14, 8], "texture": "#canvas" },
+        "south": { "uv": [2, 2, 14, 8], "texture": "#canvas" },
+        "west": { "uv": [2, 2, 14, 8], "texture": "#canvas" },
+        "east": { "uv": [2, 2, 14, 8], "texture": "#canvas" },
+        "up": { "uv": [2, 2, 14, 14], "texture": "#canvas" }
+      }
+    },
+    {
+      "from": [6, 14, 6],
+      "to": [10, 16, 10],
+      "faces": {
+        "north": { "uv": [6, 0, 10, 2], "texture": "#canvas" },
+        "south": { "uv": [6, 0, 10, 2], "texture": "#canvas" },
+        "west": { "uv": [6, 0, 10, 2], "texture": "#canvas" },
+        "east": { "uv": [6, 0, 10, 2], "texture": "#canvas" },
+        "up": { "uv": [6, 6, 10, 10], "texture": "#canvas" }
+      }
+    }
+  ]
+}

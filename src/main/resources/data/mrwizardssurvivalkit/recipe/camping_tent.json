@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FFF",
+    "F F",
+    "FFF"
+  ],
+  "key": {
+    "F": { "item": "mrwizardssurvivalkit:tent_fabric" }
+  },
+  "result": {
+    "id": "mrwizardssurvivalkit:camping_tent",
+    "count": 1
+  }
+}

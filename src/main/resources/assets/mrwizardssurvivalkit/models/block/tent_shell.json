@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mrwizardssurvivalkit:block/tent_canvas"
+  }
+}

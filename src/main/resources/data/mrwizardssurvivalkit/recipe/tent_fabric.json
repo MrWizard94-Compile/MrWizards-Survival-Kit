@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WW",
+    "WS"
+  ],
+  "key": {
+    "W": { "item": "minecraft:green_wool" },
+    "S": { "item": "minecraft:stick" }
+  },
+  "result": {
+    "id": "mrwizardssurvivalkit:tent_fabric",
+    "count": 4
+  }
+}

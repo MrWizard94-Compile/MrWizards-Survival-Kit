@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "mrwizardssurvivalkit:block/tent_canvas_pitch_1",
+    "front": "mrwizardssurvivalkit:block/tent_canvas_pitch_1",
+    "side": "mrwizardssurvivalkit:block/tent_canvas_pitch_1"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mrwizardssurvivalkit:block/tent_door",
+    "door": "mrwizardssurvivalkit:block/tent_door",
+    "canvas": "mrwizardssurvivalkit:block/tent_canvas"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 14],
+      "to": [5, 16, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 5, 16], "texture": "#door" },
+        "south": { "uv": [0, 0, 5, 16], "texture": "#door" },
+        "west": { "uv": [0, 0, 2, 16], "texture": "#canvas" },
+        "east": { "uv": [0, 0, 2, 16], "texture": "#canvas" },
+        "up": { "uv": [0, 0, 5, 2], "texture": "#canvas" },
+        "down": { "uv": [0, 0, 5, 2], "texture": "#canvas" }
+      }
+    },
+    {
+      "from": [11, 0, 14],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": { "uv": [11, 0, 16, 16], "texture": "#door" },
+        "south": { "uv": [11, 0, 16, 16], "texture": "#door" },
+        "west": { "uv": [0, 0, 2, 16], "texture": "#canvas" },
+        "east": { "uv": [0, 0, 2, 16], "texture": "#canvas" },
+        "up": { "uv": [11, 0, 16, 2], "texture": "#canvas" },
+        "down": { "uv": [11, 0, 16, 2], "texture": "#canvas" }
+      }
+    },
+    {
+      "from": [5, 12, 14],
+      "to": [11, 16, 16],
+      "faces": {
+        "north": { "uv": [5, 0, 11, 4], "texture": "#door" },
+        "south": { "uv": [5, 0, 11, 4], "texture": "#door" },
+        "up": { "uv": [5, 0, 11, 2], "texture": "#canvas" },
+        "down": { "uv": [5, 0, 11, 2], "texture": "#door" }
+      }
+    }
+  ]
+}

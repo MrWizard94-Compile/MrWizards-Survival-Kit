@@ -1,0 +1,244 @@
+{
+  "variants": {
+    "facing=north,anim_stage=0,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall"
+    },
+    "facing=north,anim_stage=0,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof"
+    },
+    "facing=north,anim_stage=0,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor"
+    },
+    "facing=north,anim_stage=0,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper"
+    },
+    "facing=north,anim_stage=1,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall"
+    },
+    "facing=north,anim_stage=1,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof"
+    },
+    "facing=north,anim_stage=1,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor"
+    },
+    "facing=north,anim_stage=1,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper"
+    },
+    "facing=north,anim_stage=2,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall"
+    },
+    "facing=north,anim_stage=2,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof"
+    },
+    "facing=north,anim_stage=2,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor"
+    },
+    "facing=north,anim_stage=2,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper"
+    },
+    "facing=north,anim_stage=3,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall"
+    },
+    "facing=north,anim_stage=3,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof"
+    },
+    "facing=north,anim_stage=3,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor"
+    },
+    "facing=north,anim_stage=3,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper"
+    },
+    "facing=south,anim_stage=0,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 180
+    },
+    "facing=south,anim_stage=0,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 180
+    },
+    "facing=south,anim_stage=0,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 180
+    },
+    "facing=south,anim_stage=0,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 180
+    },
+    "facing=south,anim_stage=1,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 180
+    },
+    "facing=south,anim_stage=1,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 180
+    },
+    "facing=south,anim_stage=1,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 180
+    },
+    "facing=south,anim_stage=1,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 180
+    },
+    "facing=south,anim_stage=2,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 180
+    },
+    "facing=south,anim_stage=2,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 180
+    },
+    "facing=south,anim_stage=2,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 180
+    },
+    "facing=south,anim_stage=2,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 180
+    },
+    "facing=south,anim_stage=3,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 180
+    },
+    "facing=south,anim_stage=3,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 180
+    },
+    "facing=south,anim_stage=3,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 180
+    },
+    "facing=south,anim_stage=3,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 180
+    },
+    "facing=west,anim_stage=0,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 270
+    },
+    "facing=west,anim_stage=0,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 270
+    },
+    "facing=west,anim_stage=0,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 270
+    },
+    "facing=west,anim_stage=0,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 270
+    },
+    "facing=west,anim_stage=1,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 270
+    },
+    "facing=west,anim_stage=1,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 270
+    },
+    "facing=west,anim_stage=1,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 270
+    },
+    "facing=west,anim_stage=1,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 270
+    },
+    "facing=west,anim_stage=2,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 270
+    },
+    "facing=west,anim_stage=2,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 270
+    },
+    "facing=west,anim_stage=2,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 270
+    },
+    "facing=west,anim_stage=2,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 270
+    },
+    "facing=west,anim_stage=3,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 270
+    },
+    "facing=west,anim_stage=3,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 270
+    },
+    "facing=west,anim_stage=3,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 270
+    },
+    "facing=west,anim_stage=3,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 270
+    },
+    "facing=east,anim_stage=0,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 90
+    },
+    "facing=east,anim_stage=0,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 90
+    },
+    "facing=east,anim_stage=0,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 90
+    },
+    "facing=east,anim_stage=0,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 90
+    },
+    "facing=east,anim_stage=1,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 90
+    },
+    "facing=east,anim_stage=1,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 90
+    },
+    "facing=east,anim_stage=1,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 90
+    },
+    "facing=east,anim_stage=1,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 90
+    },
+    "facing=east,anim_stage=2,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 90
+    },
+    "facing=east,anim_stage=2,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 90
+    },
+    "facing=east,anim_stage=2,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 90
+    },
+    "facing=east,anim_stage=2,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 90
+    },
+    "facing=east,anim_stage=3,role=wall": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_wall",
+      "y": 90
+    },
+    "facing=east,anim_stage=3,role=roof": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_roof",
+      "y": 90
+    },
+    "facing=east,anim_stage=3,role=floor": {
+      "model": "mrwizardssurvivalkit:block/tent_fabric_floor",
+      "y": 90
+    },
+    "facing=east,anim_stage=3,role=entrance": {
+      "model": "mrwizardssurvivalkit:block/camping_tent_upper",
+      "y": 90
+    }
+  }
+}

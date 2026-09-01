@@ -1,0 +1,155 @@
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'net.neoforged.gradle.userdev' version '7.1.25'
+}
+
+group = mod_group
+version = mod_version
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+sourceSets {
+    gameTest {
+        java.srcDirs = ['src/gametest/java']
+        resources.srcDirs = ['src/gametest/resources']
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+    }
+
+    client {
+        modSource project.sourceSets.main
+    }
+
+    server {
+        modSource project.sourceSets.main
+    }
+
+    gameTestServer {
+        modSource(sourceSets.main)
+        modSource(sourceSets.gameTest)
+    }
+
+    junit {
+        modSource project.sourceSets.main
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.theillusivec4.top/' }
+}
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neoforge_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+    testCompileOnly 'org.jetbrains:annotations:24.1.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    gameTestImplementation "net.neoforged:neoforge:${neoforge_version}"
+    gameTestCompileOnly 'org.jetbrains:annotations:24.1.0'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+processResources {
+    final def replaceProperties = [
+            mod_version: mod_version,
+            mod_id     : mod_id,
+            mod_name   : mod_name
+    ]
+    inputs.properties replaceProperties
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand replaceProperties
+    }
+}
+
+checkstyle {
+    toolVersion = '10.17.0'
+    configFile = file('config/checkstyle/checkstyle.xml')
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}
+
+void writeEmptyStructureNbt(File outFile) {
+    final def baos = new ByteArrayOutputStream()
+    final def dos = new DataOutputStream(baos)
+    dos.writeByte(10)
+    dos.writeShort(0)
+    dos.writeByte(9)
+    dos.writeShort(4)
+    dos.writeBytes('size')
+    dos.writeByte(3)
+    dos.writeInt(3)
+    [9, 9, 9].each { dos.writeInt(it) }
+    dos.writeByte(9)
+    dos.writeShort(8)
+    dos.writeBytes('entities')
+    dos.writeByte(10)
+    dos.writeInt(0)
+    dos.writeByte(9)
+    dos.writeShort(6)
+    dos.writeBytes('blocks')
+    dos.writeByte(10)
+    dos.writeInt(0)
+    dos.writeByte(9)
+    dos.writeShort(7)
+    dos.writeBytes('palette')
+    dos.writeByte(10)
+    dos.writeInt(1)
+    dos.writeByte(8)
+    dos.writeShort(4)
+    dos.writeBytes('Name')
+    dos.writeShort(13)
+    dos.writeBytes('minecraft:air')
+    dos.writeByte(0)
+    dos.writeByte(3)
+    dos.writeShort(11)
+    dos.writeBytes('DataVersion')
+    dos.writeInt(3955)
+    dos.writeByte(0)
+    dos.flush()
+    outFile.parentFile.mkdirs()
+    outFile.withOutputStream { fos ->
+        final def gz = new java.util.zip.GZIPOutputStream(fos)
+        gz.write(baos.toByteArray())
+        gz.close()
+    }
+}
+
+tasks.register('generateGameTestStructures') {
+    final def structDir = file("src/main/resources/data/${mod_id}/structure")
+    final def out1 = new File(structDir, 'tentplacementgametest.empty_platform.nbt')
+    final def out2 = new File(structDir, 'tentpocketgametest.empty_platform.nbt')
+    inputs.property 'structureVersion', 1
+    outputs.files out1, out2
+    doLast {
+        [out1, out2].each { writeEmptyStructureNbt(it) }
+    }
+}
+
+processResources.dependsOn 'generateGameTestStructures'
+sourcesJar.dependsOn 'generateGameTestStructures'
+tasks.matching { it.name == 'processGameTestResources' }.configureEach {
+    dependsOn 'generateGameTestStructures'
+}
+
+check.dependsOn 'runGameTestServer'

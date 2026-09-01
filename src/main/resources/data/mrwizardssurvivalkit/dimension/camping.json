@@ -1,0 +1,22 @@
+{
+  "type": "mrwizardssurvivalkit:camping",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "minecraft:plains",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        {
+          "block": "minecraft:barrier",
+          "height": 1
+        },
+        {
+          "block": "minecraft:air",
+          "height": 63
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

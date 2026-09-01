@@ -1,0 +1,22 @@
+{
+  "mod.mrwizardssurvivalkit.name": "MrWizards Survial Kit",
+  "itemGroup.mrwizardssurvivalkit": "MrWizards Survial Kit",
+  "item.mrwizardssurvivalkit.camping_tent": "Camping Tent",
+  "item.mrwizardssurvivalkit.tent_fabric": "Tent Fabric",
+  "item.mrwizardssurvivalkit.tent_shell": "Tent Shell",
+  "item.mrwizardssurvivalkit.tent_entrance": "Tent Entrance",
+  "item.mrwizardssurvivalkit.mre": "MRE",
+  "block.mrwizardssurvivalkit.camping_tent": "Camping Tent",
+  "block.mrwizardssurvivalkit.tent_fabric": "Tent Fabric",
+  "block.mrwizardssurvivalkit.tent_shell": "Tent Shell",
+  "block.mrwizardssurvivalkit.tent_entrance": "Tent Entrance",
+  "subtitle.mrwizardssurvivalkit.tent_zipper": "Tent zipper shuffles",
+  "gui.mrwizardssurvivalkit.tent_door": "Camping Tent",
+  "gui.mrwizardssurvivalkit.enter": "Enter",
+  "gui.mrwizardssurvivalkit.pack_up": "Pack Up",
+  "gui.mrwizardssurvivalkit.cancel": "Cancel",
+  "message.mrwizardssurvivalkit.no_clearance": "Not enough space to pitch the tent (needs 3x4x3 clear).",
+  "message.mrwizardssurvivalkit.no_tent_to_place": "No camping tent in inventory or Curios charm slot.",
+  "key.categories.mrwizardssurvivalkit": "MrWizards Survial Kit",
+  "key.mrwizardssurvivalkit.place_tent": "Place Camping Tent"
+}

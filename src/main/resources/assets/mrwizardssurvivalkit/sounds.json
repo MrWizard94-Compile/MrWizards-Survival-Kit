@@ -1,0 +1,11 @@
+{
+  "tent_zipper": {
+    "subtitle": "subtitle.mrwizardssurvivalkit.tent_zipper",
+    "sounds": [
+      {
+        "name": "mrwizardssurvivalkit:tent_zipper",
+        "stream": false
+      }
+    ]
+  }
+}
