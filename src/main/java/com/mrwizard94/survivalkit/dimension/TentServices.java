@@ -50,7 +50,42 @@ import java.util.UUID;
  */
 public final class TentServices {
 
+    /**
+     * Last black-screen tick count requested via {@link #playTransition}; {@code -1} if none since reset.
+     * GameTests assert pack-up leaves this at {@code -1} while enter/leave set it.
+     */
+    private static int lastBlackScreenTicksSent = -1;
+
+    private static java.util.function.Consumer<ServerPlayer> blackScreenDispatcher =
+            TentServices::dispatchBlackScreenPayload;
+
     private TentServices() {
+    }
+
+    /**
+     * Clears the black-screen probe used by GameTests.
+     */
+    public static void resetBlackScreenProbeForTest() {
+        lastBlackScreenTicksSent = -1;
+    }
+
+    /**
+     * Reads the black-screen probe set by {@link #playTransition}.
+     *
+     * @return last black-screen duration queued, or {@code -1} if none since reset
+     */
+    public static int lastBlackScreenTicksSentForTest() {
+        return lastBlackScreenTicksSent;
+    }
+
+    /**
+     * Optionally replaces the client payload dispatcher (GameTestServer cannot negotiate play-to-client).
+     *
+     * @param dispatcher custom sender, or {@code null} to restore the production PacketDistributor path
+     */
+    public static void installBlackScreenDispatcherForTest(
+            final java.util.function.Consumer<ServerPlayer> dispatcher) {
+        blackScreenDispatcher = dispatcher == null ? TentServices::dispatchBlackScreenPayload : dispatcher;
     }
 
     /**
@@ -411,10 +446,25 @@ public final class TentServices {
             // Fallback: leave to overworld spawn-ish if somehow inside without tag
             return;
         }
-        final String dim = tag.getString("mwsk_ret_dim");
-        final double x = tag.getDouble("mwsk_ret_x");
-        final double y = tag.getDouble("mwsk_ret_y");
-        final double z = tag.getDouble("mwsk_ret_z");
+        // Prefer live exterior binding for this tent so leave stays at the active door
+        // after other tents were packed (cached enter coords can point at a cleared footprint).
+        double x = tag.getDouble("mwsk_ret_x");
+        double y = tag.getDouble("mwsk_ret_y");
+        double z = tag.getDouble("mwsk_ret_z");
+        String dim = tag.getString("mwsk_ret_dim");
+        if (tag.hasUUID("mwsk_tent")) {
+            final UUID tentId = tag.getUUID("mwsk_tent");
+            final Optional<TentRoomBinding> bindingOpt = TentSavedData.get(player.serverLevel()).find(tentId);
+            if (bindingOpt.isPresent()) {
+                final TentRoomBinding binding = bindingOpt.get();
+                final LeaveReturnPose.Pose leave = LeaveReturnPose.compute(
+                        binding.exteriorX(), binding.exteriorY(), binding.exteriorZ(), binding.facing());
+                x = leave.x();
+                y = leave.y();
+                z = leave.z();
+                dim = binding.exteriorDim();
+            }
+        }
         final ResourceLocation dimId = ResourceLocation.tryParse(dim);
         if (dimId == null) {
             return;
@@ -450,7 +500,7 @@ public final class TentServices {
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
         }
-        playTransition(player);
+        // Pack-up must not black-screen; enter/leave alone use playTransition.
     }
 
     /**
@@ -472,14 +522,16 @@ public final class TentServices {
             return ItemStack.EMPTY;
         }
         final TentRoomBinding binding = bindingOpt.get();
+        final int ox = binding.exteriorX();
+        final int oy = binding.exteriorY();
+        final int oz = binding.exteriorZ();
 
         final BlockEntity be = level.getBlockEntity(doorPos);
         if (be instanceof CampingTentBlockEntity tent) {
-            tent.beginPacking(binding.exteriorX(), binding.exteriorY(), binding.exteriorZ());
-        } else {
-            // No controller BE: clear immediately as a safe fallback.
-            clearExterior(level, binding.exteriorX(), binding.exteriorY(), binding.exteriorZ());
+            tent.beginPacking(ox, oy, oz);
         }
+        // Always schedule a dimension-tick clear so multi-tent pack survives BE reset.
+        PendingPackClears.schedule(level, ox, oy, oz);
 
         final ItemStack stack = new ItemStack(ModItems.CAMPING_TENT.get());
         CampingTentItem.writeTentId(stack, tentId);
@@ -559,8 +611,9 @@ public final class TentServices {
     }
 
     private static void playTransition(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(
-                player, new TentTransitionPayload(TentTransition.BLACK_SCREEN_TICKS));
+        // Probe first so GameTests can assert enter/leave vs pack without requiring a negotiated client channel.
+        lastBlackScreenTicksSent = TentTransition.BLACK_SCREEN_TICKS;
+        blackScreenDispatcher.accept(player);
         player.level().playSound(
                 null,
                 player.blockPosition(),
@@ -568,6 +621,11 @@ public final class TentServices {
                 SoundSource.PLAYERS,
                 1.0F,
                 1.0F);
+    }
+
+    private static void dispatchBlackScreenPayload(final ServerPlayer player) {
+        PacketDistributor.sendToPlayer(
+                player, new TentTransitionPayload(TentTransition.BLACK_SCREEN_TICKS));
     }
 
     /**

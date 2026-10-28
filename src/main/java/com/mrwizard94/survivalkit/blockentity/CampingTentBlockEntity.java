@@ -80,13 +80,11 @@ public final class CampingTentBlockEntity extends BlockEntity {
 
         if (be.animTicks >= total) {
             if (be.packing) {
+                // Clear is owned by PendingPackClears (scheduled at packUp) so a mid-anim
+                // setBlock that recreates this BE cannot strand the footprint.
                 be.packing = false;
                 be.animTicks = 0;
-                if (level instanceof ServerLevel serverLevel && be.hasPackOrigin) {
-                    TentServices.finishPackClear(
-                            serverLevel, be.packOriginX, be.packOriginY, be.packOriginZ);
-                    be.hasPackOrigin = false;
-                }
+                be.hasPackOrigin = false;
                 be.setChanged();
             } else {
                 be.pitching = false;

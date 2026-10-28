@@ -21,6 +21,15 @@ public final class TentTransition {
     }
 
     /**
+     * Pack-up must not trigger the enter/leave black-screen overlay.
+     *
+     * @return always {@code false}
+     */
+    public static boolean blackScreenOnPackUp() {
+        return false;
+    }
+
+    /**
      * Maps animation progress {@code 0..total} to a discrete stage {@code 0..stages-1}.
      *
      * @param tick    current tick into the animation

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "mrwizardssurvivalkit:block/tent_entrance" },
+    "facing=south": { "model": "mrwizardssurvivalkit:block/tent_entrance", "y": 180 },
+    "facing=west": { "model": "mrwizardssurvivalkit:block/tent_entrance", "y": 270 },
+    "facing=east": { "model": "mrwizardssurvivalkit:block/tent_entrance", "y": 90 }
+  }
+}

@@ -3,6 +3,7 @@ package com.mrwizard94.survivalkit.gametest;
 import com.mrwizard94.survivalkit.block.CampingTentBlock;
 import com.mrwizard94.survivalkit.block.TentFabricBlock;
 import com.mrwizard94.survivalkit.blockentity.CampingTentBlockEntity;
+import com.mrwizard94.survivalkit.dimension.PendingPackClears;
 import com.mrwizard94.survivalkit.dimension.TentSavedData;
 import com.mrwizard94.survivalkit.dimension.TentServices;
 import com.mrwizard94.survivalkit.item.CampingTentItem;
@@ -114,16 +115,84 @@ public final class TentPlacementGameTest {
         }
         for (int i = 0; i <= TentTransition.PACK_ANIM_TICKS + 2; i++) {
             final BlockEntity current = level.getBlockEntity(door);
-            if (!(current instanceof CampingTentBlockEntity controller)) {
-                break;
+            if (current instanceof CampingTentBlockEntity controller) {
+                CampingTentBlockEntity.tick(level, door, level.getBlockState(door), controller);
             }
-            CampingTentBlockEntity.tick(level, door, level.getBlockState(door), controller);
+            PendingPackClears.tickLevel(level);
         }
         if (!level.getBlockState(door).isAir()) {
             helper.fail("Door still present after pack animation");
             return;
         }
         helper.succeed();
+    }
+
+    /**
+     * Four sequential pitch→pack cycles each fully clear their footprint after anim ticks.
+     *
+     * @param helper helper
+     */
+    @GameTest(template = "empty_platform", timeoutTicks = 400)
+    public static void multiTentPackClearsEachFootprint(@NotNull final GameTestHelper helper) {
+        final ServerLevel level = helper.getLevel();
+        PendingPackClears.clearAllForTests();
+        final Direction facing = Direction.SOUTH;
+        final BlockPos[] origins = new BlockPos[]{
+                helper.absolutePos(new BlockPos(1, 2, 1)),
+                helper.absolutePos(new BlockPos(5, 2, 1)),
+                helper.absolutePos(new BlockPos(1, 2, 6)),
+                helper.absolutePos(new BlockPos(5, 2, 6))
+        };
+        final BlockPos[] doors = new BlockPos[origins.length];
+        final UUID[] ids = new UUID[origins.length];
+        for (int t = 0; t < origins.length; t++) {
+            clearVolume(level, origins[t]);
+            ids[t] = UUID.randomUUID();
+            doors[t] = CampingTentItem.computeDoorPos(
+                    origins[t].getX(), origins[t].getY(), origins[t].getZ(), facing);
+            TentServices.pitchTent(
+                    level,
+                    ids[t],
+                    origins[t].getX(),
+                    origins[t].getY(),
+                    origins[t].getZ(),
+                    facing,
+                    doors[t]);
+        }
+        for (int t = 0; t < origins.length; t++) {
+            final ItemStack stacked = TentServices.packUp(level, doors[t], ids[t]);
+            if (!stacked.is(ModItems.CAMPING_TENT.get())) {
+                helper.fail("Pack " + t + " did not return tent item");
+                return;
+            }
+            for (int i = 0; i <= TentTransition.PACK_ANIM_TICKS + 2; i++) {
+                final BlockEntity current = level.getBlockEntity(doors[t]);
+                if (current instanceof CampingTentBlockEntity controller) {
+                    CampingTentBlockEntity.tick(
+                            level, doors[t], level.getBlockState(doors[t]), controller);
+                }
+                PendingPackClears.tickLevel(level);
+            }
+            if (!footprintIsAir(level, origins[t])) {
+                helper.fail("Footprint " + t + " still has tent blocks after pack anim");
+                return;
+            }
+        }
+        helper.succeed();
+    }
+
+    private static boolean footprintIsAir(final ServerLevel level, final BlockPos origin) {
+        for (int y = 0; y < TentFootprint.HEIGHT; y++) {
+            for (int x = 0; x < TentFootprint.WIDTH; x++) {
+                for (int z = 0; z < TentFootprint.DEPTH; z++) {
+                    final var state = level.getBlockState(origin.offset(x, y, z));
+                    if (state.is(ModBlocks.CAMPING_TENT.get()) || state.is(ModBlocks.TENT_FABRIC.get())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**

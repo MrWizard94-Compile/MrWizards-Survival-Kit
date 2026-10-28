@@ -3,6 +3,7 @@ package com.mrwizard94.survivalkit.logic;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -15,6 +16,7 @@ final class TentTransitionTest {
         assertEquals(20, TentTransition.BLACK_SCREEN_TICKS);
         assertEquals(40, TentTransition.PITCH_ANIM_TICKS);
         assertEquals(40, TentTransition.PACK_ANIM_TICKS);
+        assertFalse(TentTransition.blackScreenOnPackUp());
         assertEquals("mrwizardssurvivalkit:tent_zipper", TentTransition.ZIPPER_SOUND_ID);
     }
 

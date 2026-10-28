@@ -2,21 +2,25 @@ package com.mrwizard94.survivalkit.gametest;
 
 import com.mrwizard94.survivalkit.dimension.CampingDimension;
 import com.mrwizard94.survivalkit.dimension.CampingDimensionBootstrap;
+import com.mrwizard94.survivalkit.dimension.PendingPackClears;
 import com.mrwizard94.survivalkit.dimension.TentSavedData;
 import com.mrwizard94.survivalkit.dimension.TentServices;
 import com.mrwizard94.survivalkit.event.MobRepelHandler;
 import com.mrwizard94.survivalkit.item.CampingTentItem;
+import com.mrwizard94.survivalkit.logic.DoorAction;
 import com.mrwizard94.survivalkit.logic.HostileRepelRules;
 import com.mrwizard94.survivalkit.logic.LeaveReturnPose;
 import com.mrwizard94.survivalkit.logic.TentFootprint;
 import com.mrwizard94.survivalkit.logic.TentInteriorBounds;
 import com.mrwizard94.survivalkit.logic.TentRoomBinding;
+import com.mrwizard94.survivalkit.logic.TentTransition;
 import com.mrwizard94.survivalkit.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
@@ -138,6 +142,111 @@ public final class TentPocketGameTest {
             return;
         }
         helper.succeed();
+    }
+
+    /**
+     * Drives shipped enter/leave/pack paths: pack via {@link DoorAction#PACK_UP} must not black-screen;
+     * {@link TentServices#leaveTent} with stale A return coords while inside tent B lands at B's door
+     * after A was packed.
+     *
+     * @param helper helper
+     */
+    @GameTest(template = "empty_platform", timeoutTicks = 240)
+    @SuppressWarnings("removal") // GameTestHelper.makeMockServerPlayerInLevel is the only ServerPlayer factory here
+    public static void leaveTentIgnoresStaleCoordsAfterNeighborPacked(
+            @NotNull final GameTestHelper helper) {
+        final ServerLevel level = helper.getLevel();
+        PendingPackClears.clearAllForTests();
+        TentServices.resetBlackScreenProbeForTest();
+        CampingDimensionBootstrap.ensureCampingLevel(level.getServer());
+        final Direction facing = Direction.SOUTH;
+        final BlockPos originA = helper.absolutePos(new BlockPos(1, 2, 1));
+        final BlockPos originB = helper.absolutePos(new BlockPos(5, 2, 1));
+        clearVolume(level, originA);
+        clearVolume(level, originB);
+        final UUID idA = UUID.randomUUID();
+        final UUID idB = UUID.randomUUID();
+        final BlockPos doorA = CampingTentItem.computeDoorPos(
+                originA.getX(), originA.getY(), originA.getZ(), facing);
+        final BlockPos doorB = CampingTentItem.computeDoorPos(
+                originB.getX(), originB.getY(), originB.getZ(), facing);
+        TentServices.pitchTent(
+                level, idA, originA.getX(), originA.getY(), originA.getZ(), facing, doorA);
+        TentServices.pitchTent(
+                level, idB, originB.getX(), originB.getY(), originB.getZ(), facing, doorB);
+
+        final ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        player.setGameMode(GameType.SURVIVAL);
+        // GameTestServer mock connections do not negotiate play-to-client payloads; probe still records.
+        TentServices.installBlackScreenDispatcherForTest(ignored -> {
+        });
+        try {
+            // Pack A on the exterior DoorAction path (same as TentDoorScreen); must not black-screen.
+            TentServices.resetBlackScreenProbeForTest();
+            TentServices.handleDoorAction(player, doorA, idA, DoorAction.PACK_UP);
+            if (TentServices.lastBlackScreenTicksSentForTest() != -1) {
+                helper.fail("DoorAction.PACK_UP / packUp(player) must not call playTransition");
+                return;
+            }
+            for (int i = 0; i <= TentTransition.PACK_ANIM_TICKS + 2; i++) {
+                PendingPackClears.tickLevel(level);
+            }
+
+            // Enter remaining tent B, then poison cached return coords with packed tent A's pose.
+            TentServices.resetBlackScreenProbeForTest();
+            TentServices.enterTent(player, idB);
+            if (TentServices.lastBlackScreenTicksSentForTest() != TentTransition.BLACK_SCREEN_TICKS) {
+                helper.fail("enterTent must request black-screen via playTransition");
+                return;
+            }
+            if (!player.getPersistentData().getBoolean("mwsk_inside")
+                    || !idB.equals(player.getPersistentData().getUUID("mwsk_tent"))) {
+                helper.fail("enterTent must mark player inside tent B");
+                return;
+            }
+            final LeaveReturnPose.Pose staleA = LeaveReturnPose.compute(
+                    originA.getX(), originA.getY(), originA.getZ(), facing.get2DDataValue());
+            player.getPersistentData().putDouble("mwsk_ret_x", staleA.x());
+            player.getPersistentData().putDouble("mwsk_ret_y", staleA.y());
+            player.getPersistentData().putDouble("mwsk_ret_z", staleA.z());
+
+            TentServices.resetBlackScreenProbeForTest();
+            TentServices.leaveTent(player);
+            if (TentServices.lastBlackScreenTicksSentForTest() != TentTransition.BLACK_SCREEN_TICKS) {
+                helper.fail("leaveTent must request black-screen via playTransition");
+                return;
+            }
+            if (player.getPersistentData().getBoolean("mwsk_inside")) {
+                helper.fail("leaveTent must clear mwsk_inside");
+                return;
+            }
+
+            final double px = player.getX();
+            final double pz = player.getZ();
+            final int bx = (int) Math.floor(px);
+            final int bz = (int) Math.floor(pz);
+            if (LeaveReturnPose.isInsideFootprint(bx, bz, originA.getX(), originA.getZ())) {
+                helper.fail("leaveTent landed in packed tent A footprint (stale cache used): "
+                        + px + "," + pz);
+                return;
+            }
+            if (LeaveReturnPose.isInsideFootprint(bx, bz, originB.getX(), originB.getZ())) {
+                helper.fail("leaveTent must land outside active tent B footprint");
+                return;
+            }
+            final double distB = Math.abs(px - (doorB.getX() + 0.5))
+                    + Math.abs(pz - (doorB.getZ() + 0.5));
+            final double distA = Math.abs(px - (doorA.getX() + 0.5))
+                    + Math.abs(pz - (doorA.getZ() + 0.5));
+            if (distB >= distA) {
+                helper.fail("leaveTent must land nearer door B than packed door A (got distB="
+                        + distB + " distA=" + distA + ")");
+                return;
+            }
+            helper.succeed();
+        } finally {
+            TentServices.installBlackScreenDispatcherForTest(null);
+        }
     }
 
     /**

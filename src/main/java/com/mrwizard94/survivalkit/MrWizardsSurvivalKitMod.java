@@ -5,6 +5,7 @@ import com.mrwizard94.survivalkit.config.SurvivalKitConfig;
 import com.mrwizard94.survivalkit.dimension.CampingDimensionBootstrap;
 import com.mrwizard94.survivalkit.event.FirstJoinHandler;
 import com.mrwizard94.survivalkit.event.MobRepelHandler;
+import com.mrwizard94.survivalkit.event.PackClearTicker;
 import com.mrwizard94.survivalkit.event.TentInteractionHandler;
 import com.mrwizard94.survivalkit.network.ModNetworking;
 import com.mrwizard94.survivalkit.registry.ModBlockEntities;
@@ -59,6 +60,7 @@ public final class MrWizardsSurvivalKitMod {
 
         NeoForge.EVENT_BUS.register(new TentInteractionHandler());
         NeoForge.EVENT_BUS.register(new MobRepelHandler());
+        NeoForge.EVENT_BUS.register(new PackClearTicker());
         NeoForge.EVENT_BUS.register(new FirstJoinHandler());
         NeoForge.EVENT_BUS.addListener(CampingDimensionBootstrap::onServerStarted);
 

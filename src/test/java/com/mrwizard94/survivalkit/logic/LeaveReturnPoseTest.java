@@ -59,4 +59,23 @@ final class LeaveReturnPoseTest {
         assertFalse(LeaveReturnPose.isInsideFootprint(
                 (int) Math.floor(south.x()), (int) Math.floor(south.z()), ox, oz));
     }
+
+    @Test
+    void compute_forActiveTent_isNearerThatDoorThanPackedNeighbor() {
+        final int facing = 0;
+        final int oxA = 10;
+        final int ozA = 20;
+        final int oxB = 20;
+        final int ozB = 20;
+        final LeaveReturnPose.Pose leaveB = LeaveReturnPose.compute(oxB, 64, ozB, facing);
+        final int[] doorA = TentFootprint.doorBlock(oxA, 64, ozA, facing);
+        final int[] doorB = TentFootprint.doorBlock(oxB, 64, ozB, facing);
+        final double distB = Math.abs(leaveB.x() - (doorB[0] + 0.5))
+                + Math.abs(leaveB.z() - (doorB[2] + 0.5));
+        final double distA = Math.abs(leaveB.x() - (doorA[0] + 0.5))
+                + Math.abs(leaveB.z() - (doorA[2] + 0.5));
+        assertTrue(distB < distA);
+        assertFalse(LeaveReturnPose.isInsideFootprint(
+                (int) Math.floor(leaveB.x()), (int) Math.floor(leaveB.z()), oxA, ozA));
+    }
 }

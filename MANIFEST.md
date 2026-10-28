@@ -1,17 +1,17 @@
-# MANIFEST — MrWizards Survial Kit 1.0.0
+# MANIFEST — MrWizards Survial Kit 1.0.0 (pack/leave/door/CTM fix)
 
 ## What / why
 
-NeoForge 1.21.1 companion mod for Legends Beyond: door-anchored pitchable camping tent with full-height entrance, private pocket campsite, wall furniture, Curios/keybind soft place path, Continuity CTM assets, mob repel, starter kit (MRE), and soft VanillaAIOTs / Sophisticated Backpacks extras.
+Fix multi-tent pack-up that left exteriors standing, pack-up black screen, stale leave spawn after packing neighbors, missing interior `tent_entrance` blockstate (purple door), and Continuity CTM tiles that were identical no-ops.
 
-## Changed / added paths (this delivery)
+## Changed paths (this delivery)
 
-- Placement: `TentFootprint`, `CampingTentItem`, `LeaveReturnPose`, `TentServices`
-- Curios soft compat: `CuriosTentAccess`, `TentStackLocator`, `data/curios/tags/item/charm.json`
-- Keybind: `PlaceTentKeyPayload`, `PlaceTentKeyHandler`, `ModNetworking`, `ClientSetup`
-- Assets: `blockstates/tent_shell.json`, `camping_tent_upper` entrance models, `optifine/ctm/**`
-- Tests: `TentFootprintPlacementTest`, `TentFootprintTest`, `LeaveReturnPoseTest`, GameTests (11)
-- Docs: `README.md`, `MANIFEST.md`, `mods.toml` (optional curios + continuity)
+- `PendingPackClears` + `PackClearTicker` — reliable post-anim exterior clear
+- `TentServices` — no black-screen on pack; leave pose from live binding
+- `CampingTentBlockEntity` — pack clear no longer solely BE-owned
+- `blockstates/tent_entrance.json` + improved entrance model
+- Distinct CTM compact tiles under `optifine/ctm/tent_shell` and `tent_fabric_canvas`
+- GameTests: `multiTentPackClearsEachFootprint`, `leavePoseFollowsActiveTentAfterOtherPacked`
 
 ## How to verify
 
@@ -20,32 +20,29 @@ NeoForge 1.21.1 companion mod for Legends Beyond: door-anchored pitchable campin
 .\gradlew.bat build --no-daemon --warning-mode all --console=plain
 ```
 
-Expected: exit `0`, Checkstyle clean, unit tests pass, GameTest server reports `All 11 required tests passed`, jar at `build/libs/mrwizards-survival-kit-1.0.0.jar`.
+Expected: exit `0`; **All 13 required tests passed**; jar at `build/libs/mrwizards-survival-kit-1.0.0.jar`.
 
-Verification evidence under `{SCRATCH}` = `%LOCALAPPDATA%\Temp\grok-goal-c3ec48c3d805\implementer`:
+Scratch evidence (`%LOCALAPPDATA%\Temp\grok-goal-11f395c687e0\implementer`):
 
 | File | Content |
 |------|---------|
-| `tests-place-face.log` | Placement/facing unit tests (`TentFootprint*` / `LeaveReturnPose*`), `EXIT_CODE=0` |
-| `tests-interior-assets.log` | GameTest run incl. wall furniture / shell / full-height entrance; `All 11 required tests passed` |
-| `recipes-assets.txt` | `tent_shell` blockstate + model → `tent_canvas` texture path |
-| `curios-ctm.txt` | Curios charm tag/keybind wiring + Continuity CTM property paths |
-| `gradle-check-1.log` / `gradle-check-2.log` | `check` ×2, exit 0, 11/11 GameTests |
-| `gradle-build-1.log` / `gradle-build-2.log` | `build` ×2, exit 0 |
-| `pass1/` / `pass2/` | Copied jars from each build pass |
+| `tests-multi-pack.log` | Multi-pack GameTests; EXIT_CODE=0; All 13 passed |
+| `tests-pack-transition-leave.log` | `leaveTentIgnoresStaleCoordsAfterNeighborPacked` drives `handleDoorAction(PACK_UP)`, `enterTent`, `leaveTent` + black-screen probe |
+| `assets-door-ctm.txt` | Entrance blockstate→model→`tent_door` + distinct CTM tiles |
+| `gradle-check-1/2.log`, `gradle-build-1/2.log` | EXIT_CODE=0 |
+| `pass1/`, `pass2/` | Built jars |
 
 ## Section 0 self-audit (CONST-GATE-001)
 
-1 Completeness PASS · 2 Deps PASS (curios compileOnly; runtime optional) · 3 Zero warnings PASS · 4 Tests PASS (unit + 11 GameTests ×2) · 5 Docs PASS · 6 Security N/A-reviewed (no secrets; placement validated server-side) · 7 Perf PASS · 8 Stack fidelity PASS (1.21.1 / 21.1.248) · 9 Package PASS · 10 Resource/cache PASS · 11 Repro PASS (clean check/build ×2) · 12 IP N/A · 13 Multi-agent N/A · 14 Review packaging PASS · 15 Self-audit PASS
+1 Completeness PASS · 2 Deps PASS · 3 Zero warnings PASS · 4 Tests PASS (13 GameTests ×2) · 5 Docs PASS · 6 Security N/A-reviewed · 7 Perf PASS · 8 Stack fidelity PASS · 9 Package PASS · 10 Resource PASS · 11 Repro PASS · 12 IP N/A · 13 Multi-agent N/A · 14 Review packaging PASS · 15 Self-audit PASS
 
-Residual: Continuity CTM activates only with Continuity/OptiFine client-side; tiles are compact duplicates of `tent_canvas` (seamless base). In-game visual CTM not verified in this environment.
+Residual: Continuity in-client CTM look not screenshotted here; structural distinct tiles + properties shipped. Pitch/pack anim art polish remains non-goal.
 
 ## Suggested commit
 
-`feat: door-anchored tent pitch, Curios keybind place, Continuity CTM, wall furniture`
+`fix: reliable multi-tent pack clear, no pack blackout, entrance blockstate, CTM tiles`
 
 ## Next actions for human
 
-1. Drop `build/libs/mrwizards-survival-kit-1.0.0.jar` into Legends Beyond `mods\` and playtest: door faces you, full-height entrance, shell texture, wall furniture, **V** keybind place (inventory and Curios charm).
-2. Optional: install Continuity (client) to confirm connected canvas/shell.
-3. Optional: `git add` / commit / push when ready.
+1. Drop `build/libs/mrwizards-survival-kit-1.0.0.jar` into Legends Beyond and playtest 4× pitch/pack, leave after packing neighbors, interior door, Continuity CTM.
+2. Optional: commit/push when ready.
